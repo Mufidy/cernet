@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}训练分类器模型{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static "css/mainstyle.css" %}">
+{% endblock %}
+
+{% block content %}
+<div id="body-content" class="container-fluid">
+    <h1>训练分类器模型</h1>
+    <hr/>
+    <div class="row">
+        
+        <div class="col-md-3"><button style="display:none" id="testModelHiddenBtn">hidden</button></div>
+        <div class="col-md-6">
+            <div class="traingif">
+                <img src="{% static "img/trainClassifier.gif" %}" alt="训练中" width="100%"/>
+            </div>
+            <div class="testgif">
+                <img src="{% static "img/testloading.gif" %}" alt="测试中" width="100%"/>
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+
+        <div class="col-md-12" style="height:20px"></div>
+        
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="trainCircleBig" id="trainButton">
+                训练
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+        
+        <div class="col-md-12" style="height:20px"></div>
+        
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="dataTextLine" id="dataTextArea">
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js_script %}
+<script>
+    $("#trainButton").click(function(){
+        $("#trainButton").animate({
+            width:'150px',
+            height:'150px',
+            lineHeight:'150px',
+            fontSize:'30px'
+        });
+
+        $('.traingif').css({
+            opacity: 0.0,
+            visibility: 'visible'
+        }).animate({
+            opacity: 1.0,
+            height: '450px'
+        })
+
+        $("#trainButton").text("训练中...");
+        $("#trainButton").attr("style","pointer-events: none; cursor:default");
+
+        $.ajax({
+            url: "{% url 'ajaxTrainModel' %}",
+            type: 'get',
+            dataType: 'json',
+            success: function(data){
+                // 0: success; 1: error
+                if(data[0]==0){
+                    $('.traingif').css({
+                        opacity: 1.0,
+                        visibility: 'hidden'
+                    }).animate({
+                        opacity: 0.0,
+                        height: '0px'
+                    })
+                    $("#trainButton").animate({
+                        width:'250px',
+                        height:'250px',
+                        lineHeight:'250px',
+                        fontSize:'30px'
+                    });
+                    $("#trainButton").text("训练成功,测试中...");
+                    $('.testgif').css({
+                        opacity: 0.0,
+                        visibility: 'visible'
+                    }).animate({
+                        opacity: 0.8,
+                        height: '450px'
+                    })
+                    $("#trainButton").animate({
+                        width:'180px',
+                        height:'180px',
+                        lineHeight:'180px',
+                        fontSize:'20px'
+                    });
+                    $("#testModelHiddenBtn").click();
+                }else{
+                    alert("训练失败,请重试")
+                }
+            }
+        });
+    });
+
+    $("#testModelHiddenBtn").click(function(){
+        $.ajax({
+            url: "{% url 'ajaxTestModel' %}",
+            type: 'get',
+            dataType: 'json',
+            success: function(data){
+                //{"status":0, "result":ret}
+                //status:   0: success; 1: error
+                if(data.status == 0){
+                    $('.testgif').css({
+                        opacity: 1.0,
+                        visibility: 'hidden'
+                    }).animate({
+                        opacity: 0.0,
+                        height: '0px'
+                    })
+                    $("#trainButton").animate({
+                        width:'200px',
+                        height:'200px',
+                        lineHeight:'200px',
+                        fontSize:'30px'
+                    });
+                    $("#trainButton").text("测试成功");
+
+                    $("#dataTextArea").animate({
+                        height:'480px',
+                    });
+                    $("#dataTextArea").attr("style","border: solid 2px; border-color:#ccccff")
+                }else{
+                    alert("训练失败,请重试")
+                }
+            }
+        });
+    });
+
+
+</script>
+{% endblock %}

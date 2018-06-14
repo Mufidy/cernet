@@ -1,0 +1,96 @@
+.hideDiv{
+    display: none;
+}
+
+.bodyContent{
+    margin: auto;
+}
+
+.introCircle{
+    width: 210px;
+    height: 210px;
+    border-radius: 400px;
+    margin:auto;
+    background-color: #99ccff;
+    text-align: center;
+    line-height: 70px;
+    font-size: 20px;
+    color: white;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
+.introArrow{
+    text-align: center;
+    line-height: 210px;   
+}
+
+.circle{
+    width: 120px;
+    height: 120px;
+    border-radius: 300px;
+    margin:auto;
+    background-color: rgb(254,179,40);
+    border: solid 1px;
+    border-color: rgb(254,179,40);
+    text-align: center;
+    line-height: 120px;
+    font-size: 20px;
+    color: white;
+    font-weight: bolder;
+}
+
+.tip{
+    margin-top: 10px;
+    font-size: 16px;
+    color:black;
+}
+
+.getDataCircleBig{
+    width: 250px;
+    height: 250px;
+    border-radius: 300px;
+    margin:auto;
+    background-color: rgb(27,154,247);
+    border: solid 1px;
+    border-color: rgb(27,154,247);
+    text-align: center;
+    line-height: 250px;
+    font-size: 50px;
+    color: white;
+    cursor: pointer;
+}
+
+.dataTextLine{
+    height: 20px;
+}
+
+.trainCircleBig{
+    width: 250px;
+    height: 250px;
+    border-radius: 300px;
+    margin:auto;
+    background-color: rgb(27,154,247);
+    border: solid 1px;
+    border-color: rgb(27,154,247);
+    text-align: center;
+    line-height: 250px;
+    font-size: 50px;
+    color: white;
+    cursor: pointer;
+}
+
+.trainTextLine{
+    height: 20px;
+    display: none;
+}
+
+.traingif{
+    height: 0px;
+    visibility: hidden;
+}
+
+.testgif{
+    height: 0px;
+    visibility: hidden;
+}

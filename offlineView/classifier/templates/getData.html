@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}获取历史数据{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static "css/mainstyle.css" %}">
+{% endblock %}
+
+{% block content %}
+<div id="body-content" class="container-fluid">
+    <h1>获取历史数据</h1>
+    <hr/>
+    <div class="row">
+
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="dataTextLine" id="dataTextArea">
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+
+        <div class="col-md-12" style="height:20px"></div>
+        
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+            <div class="getDataCircleBig" id="getDataButton">
+                获取
+            </div>
+        </div>
+        <div class="col-md-3"></div>
+        
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js_script %}
+<script>
+    $("#getDataButton").click(function(){
+        $("#getDataButton").animate({
+            width:'150px',
+            height:'150px',
+            lineHeight:'150px',
+            fontSize:'30px'
+        });
+
+        $("#dataTextArea").animate({
+            height:'580px',
+        });
+
+        $("#getDataButton").text("获取中...");
+        $("#dataTextArea").attr("style","border: solid 2px; border-color:#ccccff")
+    });
+</script>
+{% endblock %}

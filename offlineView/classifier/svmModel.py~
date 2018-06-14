@@ -1,0 +1,56 @@
+from ctypes import *
+import ctypes
+import os
+import time
+import sqlite3
+from svmutil import *
+
+class SVMModel:
+    def trainModel(self,dataFileName):
+
+        ret = 0 #svm_train success!
+        try:
+            y, x = svm_read_problem(dataFileName)
+            prob = svm_problem(y, x)
+            param = svm_parameter('')
+            model = svm_train(prob, param)
+        except:
+            print("训练集异常，训练出错，请重试！")
+            ret = 1
+
+        return ret
+    
+    def testModel(self,dataFileName):
+        y, x = svm_read_problem(dataFileName)
+        prob = svm_problem(y, x)
+        param = svm_parameter('-v 10')
+        
+        CV_ACC = svm_train(prob, param)
+
+        #store model in svmmodel.db(table: model)
+        modelTime = int(time.time())
+        
+        modelFo = open(dataFileName+".model","r+")
+        modelDetail = ""
+        for i in range(0,10):
+            modelDetail = modelDetail+modelFo.readline()
+        modelFo.close()
+
+        conn = sqlite3.connect("classifier/svmmodel.db")
+        curs = conn.cursor()
+        sql = "select timestamp,modeldetail,accuracy from model"
+        cursor = curs.execute(sql)
+        for row in cursor:
+            print("******",row[0])
+        
+        #now store
+        #modelDetail = modelDetail.replace("\n","<br/>")
+        #sql2 = "insert into model values (%d,'%s',%f)" %(modelTime,modelDetail,CV_ACC)
+        #cursor = curs.execute(sql2)
+
+        return CV_ACC
+
+#only for test
+svmModel = SVMModel()
+print(svmModel.trainModel("/home/hfmiao/zn/offline_SEU/offlineView/classifier/svmdata/ddos-test.features"))
+print(svmModel.testModel("/home/hfmiao/zn/offline_SEU/offlineView/classifier/svmdata/ddos-test.features"))

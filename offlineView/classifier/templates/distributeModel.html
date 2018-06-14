@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}下发模型至EGP{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" type="text/css" href="{% static "css/mainstyle.css" %}">
+<link rel="stylesheet" type="text/css" href="{% static "css/buttons.css" %}">
+{% endblock %}
+
+{% block content %}
+<div id="body-content" class="container-fluid">
+    <h1>下发模型至EGP</h1>
+    <hr/>
+    <div class="row">
+        <div class="col-md-12" style="height:10px"></div>
+
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <div class="circle" id="egp0">
+                国防科大
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <div class="circle" id="egp1">
+                东南大学
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+
+        <div class="col-md-12" style="height:30px"></div>
+
+        <div class="col-md-3">
+            <div class="circle" id="egp2">
+                南航
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-4">
+            <div class="circle" id="egp3">
+                计算所
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+        <div class="col-md-3">
+            <div class="circle" id="egp4">
+                电子科大
+            </div>
+        </div>
+
+        <div class="col-md-12" style="height:30px"></div>
+
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <div class="circle" id="egp5">
+                陆工大
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+        <div class="col-md-3">
+            <div class="circle" id="egp6">
+                30所
+            </div>
+        </div>
+        <div class="col-md-2"></div>
+
+        <div class="col-md-12" style="height:50px"></div>
+        
+        <div class="col-md-2"></div>
+        <div class="col-md-8" style="text-align:center">
+            <button class="button button-royal button-pill button-giant" id="buttonDistribute">下发模型</button>
+            <p class="tip" id="distributeTip"></p>
+        </div>
+        <div class="col-md-2"></div>
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js_script %}
+<script>
+    var egpName = new Array("国防科大","东南大学","南航","计算所","电子科大","陆工大","30所");
+    $("#buttonDistribute").click(function(){
+        $("#distributeTip").text("");
+
+        for(var i=0; i<7; i++){
+            $("#egp"+i).attr("style","border: solid 1px; border-color:rgb(254,179,40)");
+        }
+
+        $("#buttonDistribute").text("下发ing ... ");
+        var responsed = 0; //标记已经接收了多少个
+        var failCount = 0; //标记未发送成功的个数
+
+        for(var i=0; i<7; i++){
+            $.getJSON("{% url 'ajaxDistribute' %}","egpID="+i,function(data){
+                egpID = data[0];
+                status = data[1]; //0:success; 1:timeout; 2:recv error; -1:internel error
+                if(status == -1){
+                    $("#egp"+egpID).attr("style","border: solid 4px; border-color:purple");
+                    $("#distributeTip").append("发送至"+egpName[egpID]+"时：<b style='color:purple'>内部错误</b>，请检查发送端。&nbsp;&nbsp;");
+                    failCount += 1;
+                }else if(status == 1){
+                    $("#egp"+egpID).attr("style","border: solid 4px; border-color:red");
+                    $("#distributeTip").append("发送至"+egpName[egpID]+"时：<b style='color:red'>出现超时</b>，请检查网络并重试。&nbsp;&nbsp;");
+                    failCount += 1;
+                }
+                else if(status == 2){
+                    $("#egp"+egpID).attr("style","border: solid 4px; border-color:red");
+                    $("#distributeTip").append("发送至"+egpName[egpID]+"时：<b style='color:red'>接收错误</b>，请重新发送。&nbsp;&nbsp;");
+                    failCount += 1;
+
+                }else{
+                    $("#egp"+egpID).attr("style","border: solid 4px; border-color:green");
+                    $("#distributeTip").append("发送至"+egpName[egpID]+"时：<b style='color:green'>发送成功</b>。&nbsp;&nbsp;");
+                }
+
+                responsed += 1;
+                if(responsed == 7){
+                    if(failCount > 0){
+                        $("#buttonDistribute").text("重新下发模型");
+                    }else{
+                        $("#buttonDistribute").text("发送成功");
+                    }                 
+                }
+            });
+        }
+
+
+    });
+</script>
+{% endblock %}
